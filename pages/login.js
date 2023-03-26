@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 //styles
 import styles from "../helper/styles/index.module.css";
+import Head from "next/head";
 
 const delay = async (time = 500) => {
   await new Promise((resolve) => setTimeout(resolve, time));
