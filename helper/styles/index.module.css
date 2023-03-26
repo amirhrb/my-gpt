@@ -43,7 +43,13 @@
   flex-direction: column;
   width: 320px;
 }
-.main input[type="text"] {
+.main form span {
+  color: tomato;
+  display: flex;
+  justify-content: center;
+}
+.main input[type="text"],
+.main input[type="password"] {
   padding: 12px 16px;
   border: 1px solid #10a37f;
   border-radius: 4px;
@@ -79,10 +85,12 @@
 .main .resultCont h4 {
   margin-bottom: 0.2rem;
 }
-.main .resultCont .question,
+.question,
 .result {
-  display: block;
+  display: inline-block;
   padding-left: 5px;
+  padding-right: 5px;
   border-left: 1.5px solid #000000;
+  border-right: 1.5px solid #000000;
   font-weight: bold;
 }

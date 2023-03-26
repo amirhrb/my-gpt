@@ -1,45 +1,76 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 
+//styles
+import styles from "../helper/styles/index.module.css";
+
+const delay = async (time = 500) => {
+  await new Promise((resolve) => setTimeout(resolve, time));
+};
+
 const login = () => {
+  const [loading, setLoading] = useState(false);
+  const [note, setNote] = useState("");
   const router = useRouter();
   const inputRef = useRef();
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ accessKey: inputRef.current.value }),
-      });
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw (
-          data.error ||
-          new Error(`Request failed with status ${response.status}`)
-        );
+    setLoading(true);
+    if (inputRef.current.value) {
+      try {
+        const response = await fetch("/api/auth", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ accessKey: inputRef.current.value }),
+        });
+        if (response.status === 200) {
+          await delay();
+          setLoading(false);
+          setNote("Welcome, now you will be redirected!");
+          router.replace("/");
+          return;
+        }
+        if (response.status !== 200) {
+          await delay();
+          setNote("wrong pass key!");
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        await delay();
+        setNote("an error accured!");
+        setLoading(false);
+        return;
       }
-      if (response.status === 200) {
-        // alert(data.message);
-        router.replace("/");
-      }
-    } catch (error) {
-      alert(error.message);
     }
+    setNote("Enter the key!");
+    setLoading(false);
+    return;
   };
   return (
-    <div>
+    <main className={styles.main}>
+      <Head>
+        <title>login first!</title>
+      </Head>
+      <img src="/svg/chatGPT.svg" className={styles.icon} />
+      <h3>Login</h3>
       <form onSubmit={onSubmit}>
         <input
-          type="text"
+          type="password"
           placeholder="Enter an your access key"
           ref={inputRef}
         />
-        <input type="submit" value="Generate answer" />
+        <input
+          type="submit"
+          value={loading ? "loading..." : "login"}
+          disabled={loading}
+        />
+        {note ? <span>{note}</span> : null}
       </form>
-    </div>
+    </main>
   );
 };
 

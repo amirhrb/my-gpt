@@ -60,10 +60,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Customized OpenAI</title>
-      </Head>
-
       <main className={styles.main}>
         <img src="/svg/chatGPT.svg" className={styles.icon} />
         <h3>Answer my question</h3>
@@ -80,7 +76,10 @@ export default function Home() {
             disabled={loading}
           />
         </form>
-        <div className={styles.resultCont}>
+        <div
+          className={styles.resultCont}
+          dir={/[\u0591-\u07FF]/.test(result[1]) ? "rtl" : "ltr"}
+        >
           {result[0] ? (
             <>
               <h4>You:</h4>
