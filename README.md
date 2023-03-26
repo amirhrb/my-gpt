@@ -1,10 +1,3 @@
-# OpenAI API Quickstart - Node.js example app
-
-This is an example pet name generator app used in the OpenAI API [quickstart tutorial](https://platform.openai.com/docs/quickstart). It uses the [Next.js](https://nextjs.org/) framework with [React](https://reactjs.org/). Check out the tutorial or follow the instructions below to get set up.
-
-![Text box that says name my pet with an icon of a dog](https://user-images.githubusercontent.com/10623307/213887080-b2bc4645-7fdb-4dbd-ae42-efce00d0dc29.png)
-
-
 ## Setup
 
 1. If you don’t have Node.js installed, [install it from here](https://nodejs.org/en/) (Node.js version >= 14.6.0 required)
@@ -14,7 +7,7 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
 3. Navigate into the project directory
 
    ```bash
-   $ cd openai-quickstart-node
+   $ cd my-gpt
    ```
 
 4. Install the requirements
@@ -25,15 +18,16 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
 
 5. Make a copy of the example environment variables file
 
-   On Linux systems: 
+6. Add your [API key](https://platform.openai.com/account/api-keys), secret for encryption and secretKey as password to the newly created `.env` file,
+   like this:
+
    ```bash
-   $ cp .env.example .env
+   # Do not share your OpenAI API key with anyone! It should remain a secret.
+   OPENAI_API_KEY= #your openAi api key
+   ACCESS_KEY= #your password
+   SECRET_KEY= #encryption secret(better to be at least 15 letter nonsense string)
+
    ```
-   On Windows:
-   ```powershell
-   $ copy .env.example .env
-   ```
-6. Add your [API key](https://platform.openai.com/account/api-keys) to the newly created `.env` file
 
 7. Run the app
 
@@ -41,4 +35,4 @@ This is an example pet name generator app used in the OpenAI API [quickstart tut
    $ npm run dev
    ```
 
-You should now be able to access the app at [http://localhost:3000](http://localhost:3000)! For the full context behind this example app, check out the [tutorial](https://platform.openai.com/docs/quickstart).
+You should now be able to access the app at [http://localhost:3000](http://localhost:3000).
