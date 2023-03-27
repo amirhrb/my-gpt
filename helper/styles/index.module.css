@@ -120,7 +120,7 @@
 }
 .main .resultCont {
   width: 90%;
-  max-width: 460px;
+  max-width: 550px;
   margin-bottom: 100px;
 }
 .main .resultItem {
@@ -144,7 +144,7 @@
 
 .result {
   display: inline-block;
-  max-width: 95%;
+  max-width: 100%;
   font-weight: bold;
 }
 .result p code {
