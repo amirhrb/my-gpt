@@ -45,7 +45,7 @@ export default async function (req, res) {
         ...messages,
       ],
     });
-    console.log(completion.data.choices[0].message);
+    // console.log(completion.data.choices[0].message);
     res.status(200).json({
       result: completion.data.choices[0].message,
       question: messages[messages.length - 1],
