@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from "openai";
+const { Configuration, OpenAIApi } = require("openai");
 import { isVaild } from "../../helper/utils/fns";
 
 const configuration = new Configuration({
@@ -24,8 +24,8 @@ export default async function (req, res) {
     return;
   }
 
-  const prompt = req.body.prompt || "";
-  if (prompt.trim().length === 0) {
+  const messages = req.body.messages || "";
+  if (messages.length === 0) {
     res.status(400).json({
       error: {
         message: "Please enter a valid prompt",
@@ -35,18 +35,21 @@ export default async function (req, res) {
   }
 
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: prompt,
-      temperature: 0.6,
-      max_tokens: 300,
-      top_p: 1,
-      frequency_penalty: 0.0,
-      presence_penalty: 0.6,
-      stop: [" Human:", " AI:"],
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: "always put all codes in markdown format",
+        },
+        ...messages,
+      ],
     });
-    console.log(completion.data);
-    res.status(200).json({ result: [completion.data.choices[0].text, prompt] });
+    console.log(completion.data.choices[0].message);
+    res.status(200).json({
+      result: completion.data.choices[0].message,
+      question: messages[messages.length - 1],
+    });
   } catch (error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {

@@ -10,7 +10,7 @@ import styles from "../helper/styles/index.module.css";
 
 export default function Home() {
   const router = useRouter();
-  const [prompt, setPrompt] = useState("");
+  const [messages, setMessages] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(["", ""]);
 
@@ -40,10 +40,11 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: prompt }),
+        body: JSON.stringify({ messages: messages }),
       });
       setPrompt("");
       const data = await response.json();
+      console.log(data);
       if (response.status !== 200) {
         throw (
           data.error ||
@@ -83,9 +84,9 @@ export default function Home() {
           {result[0] ? (
             <>
               <h4>You:</h4>
-              <code className={styles.question}>{result[1]}</code>
+              <code className={styles.question}>{result[0]}</code>
               <h4>AI:</h4>
-              <code className={styles.result}>{result[0]}</code>
+              <code className={styles.result}>{result[1]}</code>
             </>
           ) : (
             ""

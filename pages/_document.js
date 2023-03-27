@@ -5,7 +5,6 @@ const Document = () => {
     <Html>
       <Head>
         <link rel="shortcut icon" href="/openai.ico" type="image/x-icon" />
-        <title>My chatGPT</title>
       </Head>
       <body>
         <Main />
