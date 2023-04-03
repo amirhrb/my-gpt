@@ -1,0 +1,23 @@
+{
+  "short_name": "GPT",
+  "name": "openAi chatgpt",
+  "icons": [
+    {
+      "src": "/images/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/images/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/chat",
+  "background_color": "#10a37f",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#ffffff",
+  "description": "Ask your question from openai chat-gpt-3.5-turbo"
+}

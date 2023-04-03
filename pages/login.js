@@ -1,75 +1,77 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
-
+import useAuthStore from "../helper/utils/authStore";
 //styles
 import styles from "../helper/styles/index.module.css";
-import Head from "next/head";
 
-const delay = async (time = 500) => {
-  await new Promise((resolve) => setTimeout(resolve, time));
-};
+//fns
+// import { delay } from "../helper/utils/fns";
+import { toast as toaster } from "react-toastify";
 
 const login = () => {
-  const [loading, setLoading] = useState(false);
-  const [note, setNote] = useState("");
+  const [isShown, setShown] = useState(false);
   const router = useRouter();
-  const inputRef = useRef();
+  const keyRef = useRef();
+
+  const { refresh, login, isValid, loading, toast } = useAuthStore(
+    (state) => state
+  );
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  useEffect(() => {
+    if (toast.status === "success") toaster.success(toast.message);
+    else if (toast.status) {
+      toaster.error(toast.message);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    if (isValid) {
+      toaster.success(`You are authorized, redirecting to chat...`);
+      router.replace("chat");
+    }
+  }, [isValid]);
 
   const onSubmit = async (e) => {
+    //prevent reload and set in loading state
     e.preventDefault();
-    setLoading(true);
-    if (inputRef.current.value) {
-      try {
-        const response = await fetch("/api/auth", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ accessKey: inputRef.current.value }),
-        });
-        if (response.status === 200) {
-          await delay();
-          setLoading(false);
-          setNote("Welcome, now you will be redirected!");
-          router.replace("/");
-          return;
-        }
-        if (response.status !== 200) {
-          await delay();
-          setNote("wrong pass key!");
-          setLoading(false);
-          return;
-        }
-      } catch (error) {
-        await delay();
-        setNote("an error accured!");
-        setLoading(false);
-        return;
-      }
-    }
-    setNote("Enter the key!");
-    setLoading(false);
-    return;
+    await login(keyRef.current.value);
+    router.replace("chat");
   };
   return (
     <main className={styles.main}>
       <Head>
-        <title>login first!</title>
+        <title>login page</title>
       </Head>
-      <img src="/svg/chatGPT.svg" className={styles.icon} />
-      <h3>Login</h3>
+      <img src="/images/chatGPT.svg" className={styles.icon} />
+      <h3>OpenAi Login</h3>
       <form onSubmit={onSubmit}>
-        <input
-          type="password"
-          placeholder="Enter an your access key"
-          ref={inputRef}
-        />
-        <input
-          type="submit"
-          value={loading ? "loading..." : "login"}
-          disabled={loading}
-        />
-        {note ? <span>{note}</span> : null}
+        <div className={styles.inputContainer}>
+          <input
+            type={isShown ? "text" : "password"}
+            placeholder="Enter an api key"
+            ref={keyRef}
+          />
+          <span
+            className={styles.eye}
+            onClick={() => setShown((prev) => !prev)}
+          >
+            <img
+              src={
+                isShown
+                  ? "/sources/show-password.png"
+                  : "/sources/show-password-active.png"
+              }
+            />
+          </span>
+        </div>
+        <button type="submit" disabled={loading}>
+          {loading ? "loading..." : "Login"}
+        </button>
       </form>
     </main>
   );
