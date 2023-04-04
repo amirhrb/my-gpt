@@ -4,6 +4,7 @@ const useChatStore = create((set, get) => ({
   messages: [],
   inProcess: false,
   toast: { status: "", toastMsg: "" },
+  aiResponse: "",
   sendMessage: async (newMessage) => {
     set({ inProcess: true });
     try {
@@ -34,6 +35,7 @@ const useChatStore = create((set, get) => ({
       let newWordIndex = 0;
       const addInterval = setInterval(() => {
         let newWord = `${wordsArr[newWordIndex++]} `;
+        console.log(newWord);
         set({ aiResponse: (get().aiResponse += newWord) });
         set({
           messages: [
