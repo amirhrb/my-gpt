@@ -82,10 +82,10 @@
   flex-direction: row;
   justify-content: space-evenly;
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
 }
 .main .fixedForm:focus {
-  bottom: 15px;
+  bottom: 20px;
 }
 .main .fixedForm textarea {
   resize: none;
