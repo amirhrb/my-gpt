@@ -38,7 +38,16 @@ const useAuthStore = create((set, get) => ({
             "Content-Type": "application/json",
           },
         });
-
+        if (response.status === 201) {
+          const data = await response.json();
+          set({
+            toast: { status: "success", message: data.message },
+            loading: false,
+            validating: false,
+            isValid: true,
+          });
+          return;
+        }
         if (response.status === 200) {
           set({
             loading: false,

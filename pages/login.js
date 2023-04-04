@@ -8,6 +8,7 @@ import styles from "../helper/styles/index.module.css";
 //fns
 // import { delay } from "../helper/utils/fns";
 import { toast as toaster } from "react-toastify";
+import Image from "next/image";
 
 const login = () => {
   const [isShown, setShown] = useState(false);
@@ -31,7 +32,7 @@ const login = () => {
 
   useEffect(() => {
     if (isValid) {
-      toaster.success(`You are authorized, redirecting to chat...`);
+      toaster(`You are authorized, redirecting to chat...`);
       router.replace("chat");
     }
   }, [isValid]);
@@ -47,13 +48,19 @@ const login = () => {
       <Head>
         <title>login page</title>
       </Head>
-      <img src="/images/chatGPT.svg" className={styles.icon} />
+      <Image
+        src="/images/chatGPT.svg"
+        width={45}
+        height={45}
+        className={styles.icon}
+        alt="openai logo"
+      />
       <h3>OpenAi Login</h3>
       <form onSubmit={onSubmit}>
         <div className={styles.inputContainer}>
           <input
             type={isShown ? "text" : "password"}
-            placeholder="Enter an api key"
+            placeholder="Enter an api key or admin password"
             ref={keyRef}
           />
           <span

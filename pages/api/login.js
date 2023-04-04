@@ -4,6 +4,14 @@ export default async function (req, res) {
   if (req.method !== "POST")
     return res.status(403).json({ status: "failure", message: "bad request" });
   const { userKey } = req.body;
+  if (userKey === process.env.ACCESS_KEY) {
+    const days = 3;
+    const serialized = serializer(process.env.OPENAI_API_KEY, days);
+    return res
+      .status(201)
+      .setHeader("Set-Cookie", serialized)
+      .json({ status: "successful", message: "خوش هاتی براگم!" });
+  }
   if (!userKey || userKey.length < 10) {
     return res
       .status(501)

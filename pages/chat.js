@@ -17,6 +17,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 //toastify
 import { toast as toaster } from "react-toastify";
 import ErrorBoundary from "../helper/components/ErrorBoundary";
+import Image from "next/image";
 
 export default function Chat() {
   const router = useRouter();
@@ -68,7 +69,13 @@ export default function Chat() {
       style={{ justifyContent: messages.length ? "flex-end" : "normal" }}
     >
       <section className={messages.length ? styles.header : styles.iconCont}>
-        <img src="/images/chatGPT.svg" className={styles.icon} />
+        <Image
+          src="/images/chatGPT.svg"
+          width={45}
+          height={45}
+          className={styles.icon}
+          alt="openai logo"
+        />
         <h3>OpenAi chatgpt</h3>
       </section>
       <div
@@ -80,12 +87,12 @@ export default function Chat() {
               <ErrorBoundary key={index}>
                 <article
                   className={styles.resultItem}
-                  dir={/[\u0591-\u07FF]/.test(message.content) ? "rtl" : "ltr"}
+                  dir={/[\u0591-\u07FF]/.test(message?.content) ? "rtl" : "ltr"}
                 >
-                  <h4>{message.role === "user" ? "YOU:" : "AI:"}</h4>
+                  <h4>{message?.role === "user" ? "YOU:" : "AI:"}</h4>
                   <div className={styles.result}>
                     <ReactMarkdown
-                      children={message.content}
+                      children={message?.content}
                       components={{
                         code({ node, inline, className, children, ...props }) {
                           const match = /language-(\w+)/.exec(className || "");
