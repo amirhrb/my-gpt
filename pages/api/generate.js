@@ -37,7 +37,8 @@ export default async function (req, res) {
       messages: [
         {
           role: "system",
-          content: "always put all codes in markdown format",
+          content:
+            "please always put all codes in markdown format that matches the code language",
         },
         ...messages,
       ],

@@ -27,7 +27,27 @@ const useChatStore = create((set, get) => ({
       }
       const data = await response.json();
       set({
-        messages: [...get().messages, data.question, data.result],
+        messages: [...get().messages, data.question],
+      });
+      const prevMessages = get().messages;
+      let wordsArr = data.result.content.split(" ");
+      let newWordIndex = 0;
+      const addInterval = setInterval(() => {
+        let newWord = `${wordsArr[newWordIndex++]} `;
+        set({ aiResponse: (get().aiResponse += newWord) });
+        set({
+          messages: [
+            ...prevMessages,
+            { role: data.result.role, content: get().aiResponse },
+          ],
+        });
+        if (newWordIndex >= wordsArr.length) {
+          clearInterval(addInterval);
+          newWordIndex = 0;
+          set({ aiResponse: "" });
+        }
+      }, 200);
+      set({
         inProcess: false,
       });
     } catch (error) {

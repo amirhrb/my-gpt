@@ -1,5 +1,5 @@
 //react
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 //next
 import { useRouter } from "next/router";
 
@@ -16,6 +16,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 //toastify
 import { toast as toaster } from "react-toastify";
+import ErrorBoundary from "../helper/components/ErrorBoundary";
 
 export default function Chat() {
   const router = useRouter();
@@ -32,7 +33,6 @@ export default function Chat() {
 
   const inputRef = useRef(null);
   const containerRef = useRef(null);
-
   useEffect(() => {
     refresh();
   }, []);
@@ -42,6 +42,16 @@ export default function Chat() {
       router.replace("login");
     }
   }, [validating]);
+  useEffect(() => {
+    if (toastMsg) toaster.error(toastMsg);
+  }, [toastMsg]);
+  useEffect(() => {
+    window.scrollTo({
+      top: containerRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+    inputRef.current.value = "";
+  }, [messages]);
 
   async function submitHandler(event) {
     event.preventDefault();
@@ -50,15 +60,7 @@ export default function Chat() {
       return;
     }
     await sendMessage(inputRef.current.value);
-    // inputRef.current.value = "";
   }
-  useEffect(() => {
-    console.log(messages);
-    window.scrollTo({
-      top: containerRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages]);
 
   return (
     <main
@@ -75,36 +77,36 @@ export default function Chat() {
       >
         {messages.length
           ? messages.map((message, index) => (
-              <article
-                key={index}
-                className={styles.resultItem}
-                dir={/[\u0591-\u07FF]/.test(message.content) ? "rtl" : "ltr"}
-              >
-                <h4>{message.role === "user" ? "YOU:" : "AI:"}</h4>
-                <div className={styles.result}>
-                  <ReactMarkdown
-                    children={message.content}
-                    components={{
-                      code({ node, inline, className, children, ...props }) {
-                        const match = /language-(\w+)/.exec(className || "");
-                        return !inline && match ? (
-                          <SyntaxHighlighter
-                            children={String(children).replace(/\n$/, "")}
-                            //   showLineNumbers
-                            PreTag="section"
-                            language={match[1]}
-                            {...props}
-                          />
-                        ) : (
-                          <code className={className} {...props}>
-                            `{children}`
-                          </code>
-                        );
-                      },
-                    }}
-                  />
-                </div>
-              </article>
+              <ErrorBoundary key={index}>
+                <article
+                  className={styles.resultItem}
+                  dir={/[\u0591-\u07FF]/.test(message.content) ? "rtl" : "ltr"}
+                >
+                  <h4>{message.role === "user" ? "YOU:" : "AI:"}</h4>
+                  <div className={styles.result}>
+                    <ReactMarkdown
+                      children={message.content}
+                      components={{
+                        code({ node, inline, className, children, ...props }) {
+                          const match = /language-(\w+)/.exec(className || "");
+                          return !inline && match ? (
+                            <SyntaxHighlighter
+                              children={String(children).replace(/\n$/, "")}
+                              PreTag="section"
+                              language={match[1]}
+                              {...props}
+                            />
+                          ) : (
+                            <code className={className} {...props}>
+                              `{children}`
+                            </code>
+                          );
+                        },
+                      }}
+                    />
+                  </div>
+                </article>
+              </ErrorBoundary>
             ))
           : ""}
       </div>
@@ -113,7 +115,9 @@ export default function Chat() {
         className={messages.length ? styles.fixedForm : ""}
       >
         <textarea type="text" placeholder="Enter your qustion" ref={inputRef} />
-        <button disabled={inProcess}>submit</button>
+        <button disabled={inProcess}>
+          {inProcess ? "loading..." : "submit"}
+        </button>
       </form>
     </main>
   );
