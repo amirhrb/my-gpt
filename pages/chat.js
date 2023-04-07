@@ -1,23 +1,21 @@
 //react
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from 'react';
 //next
-import { useRouter } from "next/router";
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 //zustand
-import useAuthStore from "../helper/utils/authStore";
-import useChatStore from "../helper/utils/chatStore";
+import useAuthStore from '../helper/utils/authStore';
+import useChatStore from '../helper/utils/chatStore';
 
 //style
-import styles from "../helper/styles/index.module.css";
-
-//formater
-import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import styles from '../helper/styles/index.module.css';
 
 //toastify
-import { toast as toaster } from "react-toastify";
-import ErrorBoundary from "../helper/components/ErrorBoundary";
-import Image from "next/image";
+import { toast as toaster } from 'react-toastify';
+
+//components
+import Response from '../helper/components/Response';
 
 export default function Chat() {
   const router = useRouter();
@@ -25,39 +23,42 @@ export default function Chat() {
   const { refresh, isValid, validating, loading } = useAuthStore(
     (state) => state
   );
-  const {
-    messages,
-    inProcess,
-    sendMessage,
-    toast: { status, toastMsg },
-  } = useChatStore((state) => state);
+  const { messages, inProcess, sendMessage, toast } = useChatStore(
+    (state) => state
+  );
 
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   useEffect(() => {
     refresh();
   }, []);
+
   useEffect(() => {
     if (!isValid && !loading && !validating) {
-      toaster.error("You are not authorized, login first");
-      router.replace("login");
+      toaster.error('You are not authorized, login first');
+      router.replace('login');
     }
   }, [validating]);
+
   useEffect(() => {
-    if (toastMsg) toaster.error(toastMsg);
-  }, [toastMsg]);
+    if (toast.toastMsg) toaster.error(toast.toastMsg);
+    const isLoginError =
+      toast.toastMsg.toString().indexOf('Please enter an apiKey') > -1;
+    if (isLoginError) location.reload();
+  }, [toast]);
+
   useEffect(() => {
     window.scrollTo({
       top: containerRef.current.scrollHeight,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
-    inputRef.current.value = "";
+    inputRef.current.value = '';
   }, [messages]);
 
   async function submitHandler(event) {
     event.preventDefault();
     if (!inputRef.current.value) {
-      toaster.info("ask a question first!");
+      toaster.info('ask a question first!');
       return;
     }
     await sendMessage(inputRef.current.value);
@@ -66,7 +67,7 @@ export default function Chat() {
   return (
     <main
       className={styles.main}
-      style={{ justifyContent: messages.length ? "flex-end" : "normal" }}
+      style={{ justifyContent: messages.length ? 'flex-end' : 'normal' }}
     >
       <section className={messages.length ? styles.header : styles.iconCont}>
         <Image
@@ -79,51 +80,22 @@ export default function Chat() {
         <h3>OpenAi chatgpt</h3>
       </section>
       <div
-        className={messages.length ? styles.resultCont : ""}
+        className={messages.length ? styles.resultCont : ''}
         ref={containerRef}
       >
         {messages.length
           ? messages.map((message, index) => (
-              <ErrorBoundary key={index}>
-                <article
-                  className={styles.resultItem}
-                  dir={/[\u0591-\u07FF]/.test(message?.content) ? "rtl" : "ltr"}
-                >
-                  <h4>{message?.role === "user" ? "YOU:" : "AI:"}</h4>
-                  <div className={styles.result}>
-                    <ReactMarkdown
-                      children={message?.content}
-                      components={{
-                        code({ node, inline, className, children, ...props }) {
-                          const match = /language-(\w+)/.exec(className || "");
-                          return !inline && match ? (
-                            <SyntaxHighlighter
-                              children={String(children).replace(/\n$/, "")}
-                              PreTag="section"
-                              language={match[1]}
-                              {...props}
-                            />
-                          ) : (
-                            <code className={className} {...props}>
-                              `{children}`
-                            </code>
-                          );
-                        },
-                      }}
-                    />
-                  </div>
-                </article>
-              </ErrorBoundary>
+              <Response message={message} key={index} />
             ))
-          : ""}
+          : ''}
       </div>
       <form
         onSubmit={submitHandler}
-        className={messages.length ? styles.fixedForm : ""}
+        className={messages.length ? styles.fixedForm : ''}
       >
         <textarea type="text" placeholder="Enter your qustion" ref={inputRef} />
         <button disabled={inProcess}>
-          {inProcess ? "loading..." : "submit"}
+          {inProcess ? 'loading...' : 'submit'}
         </button>
       </form>
     </main>
