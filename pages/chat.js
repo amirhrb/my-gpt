@@ -69,13 +69,18 @@ export default function Chat() {
       className={styles.main}
       style={{ justifyContent: messages.length ? 'flex-end' : 'normal' }}
     >
-      <section className={messages.length ? styles.header : styles.iconCont}>
+      <section
+        className={`${messages.length ? styles.header : styles.iconCont} ${
+          styles.headerBasics
+        }`}
+      >
         <Image
           src="/images/chatGPT.svg"
           width={45}
           height={45}
           className={styles.icon}
           alt="openai logo"
+          priority
         />
         <h3>OpenAi chatgpt</h3>
       </section>

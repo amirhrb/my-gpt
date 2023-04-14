@@ -52,6 +52,7 @@ const login = () => {
         height={45}
         className={styles.icon}
         alt="openai logo"
+        priority
       />
       <h3>OpenAi Login</h3>
       <form onSubmit={onSubmit}>

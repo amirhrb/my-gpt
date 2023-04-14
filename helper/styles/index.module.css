@@ -16,14 +16,15 @@
   align-items: center;
   padding-top: 60px;
 }
-.main .iconCont {
+.main .headerBasics {
   display: flex;
-  flex-direction: column;
   align-items: center;
+}
+.main .iconCont {
+  flex-direction: column;
 }
 .main .header {
   width: 100vw;
-  background-color: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
   position: fixed;
   width: 90%;
@@ -32,10 +33,18 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
+  animation: columner 0.2s ease-in-out;
+}
+@keyframes columner {
+  0% {
+    flex-direction: column;
+    background-color: rgb(255, 255, 255);
+  }
+  100% {
+    flex-direction: row;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
 }
 .main .header h3 {
   font-size: 1rem;
@@ -212,6 +221,9 @@
 }
 .result section span {
   background-color: #121212 !important;
+}
+.result pre {
+  direction: ltr !important;
 }
 .result pre::-webkit-scrollbar,
 .result section::-webkit-scrollbar {
